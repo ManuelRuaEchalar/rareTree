@@ -2,14 +2,6 @@ import { marked } from 'https://cdn.jsdelivr.net/npm/marked@12.0.2/lib/marked.es
 
 const TL = 2000; // limite de tiempo por caso (ms); WebAssembly es ~2-3x mas lento que nativo
 const POINTS = { 1: 10, 2: 20, 3: 30, 4: 40 };
-const TEMPLATE = `#include "arbol.h"
-
-long long minimo_cortes(long long N, long long X, long long K, long long D)
-{
-    // Tu codigo aqui
-    return -1;
-}
-`;
 
 const $ = id => document.getElementById(id);
 const code = $('code'), btn = $('submit'), status = $('status'), result = $('result');
@@ -18,8 +10,8 @@ const code = $('code'), btn = $('submit'), status = $('status'), result = $('res
 fetch('enunciado.md').then(r => r.text()).then(md => { $('statement').innerHTML = marked.parse(md); });
 
 // ---------- editor ----------
-try { code.value = localStorage.getItem('arbol-code') || TEMPLATE; } catch { code.value = TEMPLATE; }
-code.addEventListener('input', () => { try { localStorage.setItem('arbol-code', code.value); } catch {} });
+try { code.value = localStorage.getItem('arbol-src') || ''; } catch {}
+code.addEventListener('input', () => { try { localStorage.setItem('arbol-src', code.value); } catch {} });
 code.addEventListener('keydown', e => {
   if (e.key === 'Tab') {
     e.preventDefault();
@@ -30,9 +22,6 @@ $('file').addEventListener('change', async e => {
   const f = e.target.files[0];
   if (f) { code.value = await f.text(); code.dispatchEvent(new Event('input')); }
   e.target.value = '';
-});
-$('reset').addEventListener('click', () => {
-  if (confirm('¿Restaurar la plantilla? Se pierde el codigo actual.')) { code.value = TEMPLATE; code.dispatchEvent(new Event('input')); }
 });
 
 // ---------- compilador ----------
@@ -93,6 +82,7 @@ const esc = s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&g
 
 btn.addEventListener('click', async () => {
   if (!compilerReady) return;
+  if (!code.value.trim()) { status.textContent = 'Escribe o sube tu código primero.'; return; }
   btn.disabled = true;
   result.innerHTML = '';
   status.textContent = 'Compilando...';
