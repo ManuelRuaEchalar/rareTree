@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Árbol extraño — Juez</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --panel: #ffffff; --text: #1d1d1b; --muted: #6b6b66; --border: #dedcd6;
+    --accent: #2f6f4f; --accent-text: #ffffff; --code-bg: #f1f0ec;
+    --ac: #2e7d4f; --wa: #c0392b; --tle: #b7791f; --re: #7d3c98; --ce: #555;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161715; --panel: #1f201e; --text: #e8e7e3; --muted: #9a9a94; --border: #353632;
+      --accent: #4fa37a; --accent-text: #0e110f; --code-bg: #2a2b28;
+      --ac: #4caf78; --wa: #e0644f; --tle: #d9a441; --re: #b07cc6; --ce: #999;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { padding: 14px 20px; border-bottom: 1px solid var(--border); background: var(--panel); }
+  header h1 { margin: 0; font-size: 18px; }
+  header span { color: var(--muted); font-size: 13px; }
+  main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; padding: 16px; max-width: 1400px; margin: 0 auto; }
+  @media (max-width: 900px) { main { grid-template-columns: minmax(0, 1fr); } }
+  section { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; min-width: 0; }
+  #statement h1 { font-size: 22px; margin-top: 0; }
+  #statement h2 { font-size: 17px; margin-top: 22px; }
+  #statement table { border-collapse: collapse; margin: 8px 0; }
+  #statement th, #statement td { border: 1px solid var(--border); padding: 4px 10px; text-align: left; }
+  #statement pre, #statement code { background: var(--code-bg); border-radius: 4px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; }
+  #statement code { padding: 1px 4px; }
+  #statement pre { padding: 10px; overflow-x: auto; }
+  #statement pre code { padding: 0; }
+  .side { display: flex; flex-direction: column; gap: 10px; }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .bar .lang { color: var(--muted); font-size: 13px; margin-right: auto; }
+  button, label.btn { font: inherit; font-size: 14px; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--panel); color: var(--text); cursor: pointer; }
+  button.primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 600; padding: 8px 18px; }
+  button:disabled { opacity: .5; cursor: default; }
+  label.btn input { display: none; }
+  textarea { width: 100%; min-height: 360px; resize: vertical; font: 13px/1.5 ui-monospace, Menlo, Consolas, monospace; background: var(--code-bg); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 10px; tab-size: 4; }
+  #status { color: var(--muted); font-size: 13px; min-height: 1.4em; }
+  .verdict { font-weight: 700; font-size: 17px; margin: 8px 0; }
+  .verdict.AC { color: var(--ac); } .verdict.WA { color: var(--wa); } .verdict.CE { color: var(--ce); } .verdict.PARTIAL { color: var(--tle); }
+  .log { background: var(--code-bg); padding: 10px; border-radius: 6px; font-size: 12px; overflow-x: auto; white-space: pre-wrap; max-height: 320px; }
+  .sub { border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; margin: 8px 0; }
+  .sub.ok { border-color: var(--ac); } .sub.bad { border-color: var(--wa); }
+  .subhead { display: flex; justify-content: space-between; margin-bottom: 6px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 4px; }
+  .chip { font: 600 11px ui-monospace, Menlo, monospace; padding: 2px 5px; border-radius: 4px; color: #fff; cursor: help; }
+  .chip.AC { background: var(--ac); } .chip.WA { background: var(--wa); } .chip.TLE { background: var(--tle); } .chip.RE { background: var(--re); } .chip.skip { background: var(--border); color: var(--muted); }
+  .note { color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Árbol extraño <span>· juez de prueba</span></h1>
+</header>
+<main>
+  <section id="statement">Cargando enunciado...</section>
+  <section class="side">
+    <div class="bar">
+      <span class="lang">C++17 · implementa <code>minimo_cortes</code> (sin <code>main</code>)</span>
+      <label class="btn">Subir archivo<input type="file" id="file" accept=".cpp,.cc,.cxx,.h,.txt"></label>
+      <button id="reset">Plantilla</button>
+    </div>
+    <textarea id="code" spellcheck="false"></textarea>
+    <div class="bar">
+      <button id="submit" class="primary" disabled>Enviar</button>
+      <span id="status">Cargando compilador...</span>
+    </div>
+    <div class="note">Límite de tiempo: 2 s por caso. Al primer caso fallido de una subtarea, el resto de esa subtarea no se evalúa. Todo se compila y ejecuta en tu navegador (clang → WebAssembly). Excepciones de C++ desactivadas.</div>
+    <div id="result"></div>
+  </section>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>
