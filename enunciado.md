@@ -15,16 +15,24 @@ Bob quiere dejar el árbol con exactamente X hojas usando el **mínimo número d
 
 ## Entrada
 
-Una sola línea con cuatro enteros `N X K D`:
+Debes implementar la función:
+
+```
+long long minimo_cortes(long long N, long long X, long long K, long long D)
+```
+
+(en Python: `def minimo_cortes(N, X, K, D)`), donde:
 
 - `N`: la cantidad de hojas que tiene el árbol.
 - `X`: la cantidad de hojas que debe tener el árbol.
 - `K`: la cantidad de hojas especiales.
 - `D`: la cantidad de hojas adicionales que caen al cortar una hoja especial.
 
+El grader lee una línea con los cuatro enteros `N X K D` y llama a la función.
+
 ## Salida
 
-Imprime un entero: el mínimo número de cortes para dejar el árbol con exactamente X hojas, o −1 si es imposible.
+La función debe devolver el mínimo número de cortes para dejar el árbol con exactamente X hojas, o −1 si es imposible.
 
 ## Restricciones
 
@@ -44,7 +52,7 @@ Imprime un entero: el mínimo número de cortes para dejar el árbol con exactam
 
 ## Ejemplos
 
-| Entrada | Salida |
+| N X K D | Salida |
 |---|---|
 | `20 8 8 3` | `3` |
 | `20 6 8 3` | `5` |
